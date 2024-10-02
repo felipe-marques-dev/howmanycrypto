@@ -7,13 +7,11 @@ export const fetchBalances = async (address: string, chainName: string) => {
       const data = await response.data;
       
       if (data && data.data && data.data.items) {
-        console.log(data)
         return data.data.items;
       } else { 
         return []; 
       } 
     }catch (error) {
-      console.error("Erro ao obter saldos:", error);
       return [];
     }
   };

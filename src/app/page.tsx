@@ -56,7 +56,7 @@ const Home = () => {
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
       <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-gray-800 to-gray-100 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-        How Much Crypto?
+        How Many Crypto?
       </span>
       <Particles
         className="absolute inset-0"

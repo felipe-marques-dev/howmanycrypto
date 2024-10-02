@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "How Much Crypto?",
-  description: "See how much crypto an address has",
+  title: "How Many Crypto?",
+  description: "See how many crypto an address has",
 };
 
 export default function RootLayout({
