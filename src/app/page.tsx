@@ -30,7 +30,13 @@ const Home = () => {
       if (walletAddress && chainName) {
         const response = await fetchBalances(walletAddress, chainName);
         setBalances(response)
+        if(chainName == "btc-mainnet"){
+            setBtcImage(true)
+        }else{
+            setBtcImage(false)
+        }
       }
+
     }
     getBalances();
   }, [walletAddress, chainName]);
@@ -42,9 +48,7 @@ const Home = () => {
 
   const handleSelectChange = (value: string) => {
     console.log(value)
-    if(value == "btc-mainnet"){
-      setBtcImage(true)
-    }
+    
     setChainName(value);
   };
 
@@ -94,7 +98,7 @@ const Home = () => {
                 <div className="flex py-1 justify-between">
                 
                   <div className="flex flex-row">
-                  {btcImage?  <img width={60} src='https://w7.pngwing.com/pngs/634/449/png-transparent-btc-cryptocurrencies-icon.png' className="rounded-full" /> : <img width={60} src={token.logo_url} className="rounded-full" /> }
+                  <img width={60} src={btcImage? 'https://w7.pngwing.com/pngs/634/449/png-transparent-btc-cryptocurrencies-icon.png':token.logo_url} className="rounded-full" />
                   <div>
                     <div className="text-2xl px-2 font-medium text-white">{token.contract_name}</div>
                     <div className="flex">
