@@ -66,29 +66,29 @@ const Home = () => {
         refresh
       />
       <div className="my-16 w-full max-w-md backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-6">
-        <h1 className="text-2xl font-bold text-white text-center">Wallet Viewer</h1>
+        <h1 className="text-3xl font-bold text-white text-center">Wallet Viewer</h1>
         
         <Input 
           placeholder="Enter wallet address"
           onChange={handleInputChange}
-          className="rounded-xl  border-white/50 text-white placeholder-white/70"
+          className="rounded-xl h-12 border-white/50 text-white placeholder-white/70"
         />
         
         <Select value={chainName} onValueChange={handleSelectChange}>
-          <SelectTrigger className=" border-white/50 text-white rounded-xl ">
+          <SelectTrigger className=" border-white/50 h-12 text-white rounded-xl ">
             <SelectValue placeholder="Select chain" />
           </SelectTrigger>
           <SelectContent >
-          <SelectItem className="backdrop-blur-sm" value="btc-mainnet">Bitcoin</SelectItem>
-            <SelectItem className="backdrop-blur-sm"value="eth-mainnet">Ethereum</SelectItem>
-            <SelectItem className="backdrop-blur-sm"value="bsc-mainnet">BNB Smart Chain (BSC)</SelectItem>
-            <SelectItem className="backdrop-blur-sm"value="solana-mainnet">Solana</SelectItem>
+          <SelectItem className="backdrop-blur-sm h-12" value="btc-mainnet">Bitcoin</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12"value="eth-mainnet">Ethereum</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12"value="bsc-mainnet">BNB Smart Chain (BSC)</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12"value="solana-mainnet">Solana</SelectItem>
             
           </SelectContent>
         </Select>
         
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Wallet Contents</h2>
+          <h2 className="text-2xl font-semibold text-white">Wallet Contents</h2>
           <div className="grid grid-cols-1 gap-4">
           {balances.length > 0 ? (
           <ul>
