@@ -24,9 +24,6 @@ const Home = () => {
     setColor("#ffffff");
   }, [theme]);
   
-  const addPrice = (newPrice: number) => {
-    setPrices(prevPrices => [...prevPrices, newPrice])
-  }
 
   useEffect(() => {
     const getBalances = async () => {
