@@ -141,7 +141,7 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-                  <p className="text-2xl">{prices[index]} {fiatId.toUpperCase()}</p>
+                  <p className="md:text-2xl sm:text-2xl">{prices[index]} {fiatId.toUpperCase()}</p>
                 </div>
                
                 </CardContent>
