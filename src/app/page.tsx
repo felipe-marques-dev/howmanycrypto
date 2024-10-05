@@ -46,7 +46,7 @@ const Home = () => {
       
       if(fiatId){
         const pricePromises = balances.map(async (token) => {
-          const response = await fetchCovertedPrices('usd', fiatId, token.quote.toFixed(2))
+          const response = await fetchCovertedPrices('usd', fiatId, token.quote)
             return response.toFixed(2)
           }
         )
@@ -107,7 +107,7 @@ const Home = () => {
           </SelectContent>
         </Select>
         
-        <div className="space-y-4">
+        <div className="space-y-4 h-m-80 overflow-y-auto">
           <div className="flex justify-between text-center items-center mt-12">
           <h2 className="text-2xl font-semibold text-white">Wallet Contents</h2>
           <Select value={fiatId} onValueChange={handleFiatChange}>
