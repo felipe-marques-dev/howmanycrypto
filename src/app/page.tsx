@@ -4,9 +4,8 @@
 // pages/index.tsx
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
-import { cn } from "@/lib/utils";
 import { fetchBalances } from "./utils/getBalance";
+import { fetchCovertedPrices } from "./utils/getExchangeRate";
 import { useTheme } from "next-themes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,16 +16,20 @@ const Home = () => {
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [chainName, setChainName] = useState<string>('');
   const [btcImage, setBtcImage] = useState<boolean>(true)
-   const { theme } = useTheme();
+  const { theme } = useTheme();
   const [color, setColor] = useState("#ffffff");
- 
+  const [fiatId, setFiatId] = useState<string>('usd')
+  const [prices, setPrices]= useState<number[]>([])
   useEffect(() => {
     setColor("#ffffff");
   }, [theme]);
   
+  const addPrice = (newPrice: number) => {
+    setPrices(prevPrices => [...prevPrices, newPrice])
+  }
+
   useEffect(() => {
     const getBalances = async () => {
-      console.log(chainName)
       if (walletAddress && chainName) {
         const response = await fetchBalances(walletAddress, chainName);
         setBalances(response)
@@ -41,16 +44,36 @@ const Home = () => {
     getBalances();
   }, [walletAddress, chainName]);
 
+  useEffect(() => {
+    const getCryptoPrice = async () => {
+      
+      if(fiatId){
+        const pricePromises = balances.map(async (token) => {
+          const response = await fetchCovertedPrices('usd', fiatId, token.quote.toFixed(2))
+            return response.toFixed(2)
+          }
+        )
+        const prices = await Promise.all(pricePromises)
+        setPrices(prices)
+      }
+      
+    }
+    getCryptoPrice()
+  },[fiatId, balances])
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWalletAddress(e.target.value);
   };
 
   const handleSelectChange = (value: string) => {
-    console.log(value)
     
     setChainName(value);
   };
+
+  const handleFiatChange = (value: string ) => {
+    setFiatId(value)
+  }
 
 
   return (
@@ -88,7 +111,21 @@ const Home = () => {
         </Select>
         
         <div className="space-y-4">
+          <div className="flex justify-between text-center items-center mt-12">
           <h2 className="text-2xl font-semibold text-white">Wallet Contents</h2>
+          <Select value={fiatId} onValueChange={handleFiatChange}>
+          <SelectTrigger className=" border-white/50 h-12 w-1/4 text-white rounded-xl ">
+            <SelectValue placeholder="Select Fiat" />
+          </SelectTrigger>
+          <SelectContent >
+          <SelectItem className="backdrop-blur-sm h-12" value="usd">USD</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12"value="eur">EUR</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12" value="brl">BRL</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12"value="jpy">JPY</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12"value="gbp">GBP</SelectItem>
+          </SelectContent>
+        </Select>
+        </div>
           <div className="grid grid-cols-1 gap-4">
           {balances.length > 0 ? (
           <ul>
@@ -103,11 +140,11 @@ const Home = () => {
                     <div className="text-2xl px-2 font-medium text-white">{token.contract_name}</div>
                     <div className="flex">
                     <p className="px-2 ">{token.contract_ticker_symbol}</p>
-                    <p >{parseFloat(token.balance) / Math.pow(10, token.contract_decimals)}</p>
+                    <p>{(parseFloat(token.balance) / Math.pow(10, token.contract_decimals)).toFixed(6)}</p>
                     </div>
                   </div>
                 </div>
-                  <p className="text-2xl">{token.pretty_quote}</p>
+                  <p className="text-2xl">{prices[index]} {fiatId.toUpperCase()}</p>
                 </div>
                
                 </CardContent>
