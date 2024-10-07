@@ -10,6 +10,8 @@ import { useTheme } from "next-themes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import Particles from "@/components/ui/particles";
+import NumberTicker from "@/components/ui/number-ticker";
+import Author from "@/components/Author";
 
 const Home = () => {
   const [balances, setBalances] = useState<any[]>([]);
@@ -27,7 +29,7 @@ const Home = () => {
 
   useEffect(() => {
     const getBalances = async () => {
-      if (walletAddress && chainName) {
+      if (walletAddress && chainName && walletAddress.length > 25) {
         const response = await fetchBalances(walletAddress, chainName);
         setBalances(response)
         if(chainName == "btc-mainnet"){
@@ -74,8 +76,8 @@ const Home = () => {
 
 
   return (
-    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
-      <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-gray-800 to-gray-100 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
+    <div className="relative flex flex-col min-h-screen w-full overflow-y-auto items-center justify-start bg-background rounded-lg border md:shadow-xl">
+      <span className="my-12 pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-gray-800 to-gray-100 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
         How Many Crypto?
       </span>
       <Particles
@@ -85,7 +87,7 @@ const Home = () => {
         color={color}
         refresh
       />
-      <div className="my-16 w-full max-w-md backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-6">
+      <div className="my-16 min-h-screen backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-6">
         <h1 className="text-3xl font-bold text-white text-center">Wallet Viewer</h1>
         
         <Input 
@@ -99,64 +101,70 @@ const Home = () => {
             <SelectValue placeholder="Select chain" />
           </SelectTrigger>
           <SelectContent >
-          <SelectItem className="backdrop-blur-sm h-12" value="btc-mainnet">Bitcoin</SelectItem>
+            <SelectItem className="backdrop-blur-sm h-12" value="btc-mainnet">Bitcoin</SelectItem>
             <SelectItem className="backdrop-blur-sm h-12"value="eth-mainnet">Ethereum</SelectItem>
             <SelectItem className="backdrop-blur-sm h-12"value="bsc-mainnet">BNB Smart Chain (BSC)</SelectItem>
             <SelectItem className="backdrop-blur-sm h-12"value="solana-mainnet">Solana</SelectItem>
-            
           </SelectContent>
         </Select>
         
-        <div className="space-y-4 h-m-80 overflow-y-auto">
+        <div className="space-y-4">
           <div className="flex justify-between text-center items-center mt-12">
-          <h2 className="text-2xl font-semibold text-white">Wallet Contents</h2>
-          <Select value={fiatId} onValueChange={handleFiatChange}>
-          <SelectTrigger className=" border-white/50 h-12 w-1/4 text-white rounded-xl ">
-            <SelectValue placeholder="Select Fiat" />
-          </SelectTrigger>
-          <SelectContent >
-          <SelectItem className="backdrop-blur-sm h-12" value="usd">USD</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12"value="eur">EUR</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12" value="brl">BRL</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12"value="jpy">JPY</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12"value="gbp">GBP</SelectItem>
-          </SelectContent>
-        </Select>
-        </div>
-          <div className="grid grid-cols-1 gap-4">
-          {balances.length > 0 ? (
-          <ul>
-            {balances.map((token, index) => (
-              <Card key={index} className=" border-white/50 backdrop-blur-sm my-2 " >
-                <CardContent className="p-3 px-4">
-                <div className="flex py-1 justify-between">
-                
-                  <div className="flex flex-row">
-                  <img width={60} src={btcImage? 'https://w7.pngwing.com/pngs/634/449/png-transparent-btc-cryptocurrencies-icon.png':token.logo_url} className="rounded-full" />
-                  <div>
-                    <div className="text-2xl px-2 font-medium text-white">{token.contract_name}</div>
-                    <div className="flex">
-                    <p className="px-2 ">{token.contract_ticker_symbol}</p>
-                    <p>{(parseFloat(token.balance) / Math.pow(10, token.contract_decimals)).toFixed(6)}</p>
-                    </div>
-                  </div>
-                </div>
-                  <p className="md:text-2xl sm:text-2xl">{prices[index]} {fiatId.toUpperCase()}</p>
-                </div>
-               
-                </CardContent>
-              </Card>
-            ))}
-          </ul>
-        ) : (
-          <p style={{color: 'red'}} className=" text-lg font-bold ">Insert a valid address to see the balance</p>
-        )}
+            <h2 className="text-2xl font-semibold text-white">Wallet Contents</h2>
+            <Select value={fiatId} onValueChange={handleFiatChange}>
+              <SelectTrigger className=" border-white/50 h-12 w-1/4 text-white rounded-xl ">
+                <SelectValue placeholder="Select Fiat" />
+              </SelectTrigger>
+              <SelectContent >
+                <SelectItem className="backdrop-blur-sm h-12" value="usd">USD</SelectItem>
+                <SelectItem className="backdrop-blur-sm h-12"value="eur">EUR</SelectItem>
+                <SelectItem className="backdrop-blur-sm h-12" value="brl">BRL</SelectItem>
+                <SelectItem className="backdrop-blur-sm h-12"value="jpy">JPY</SelectItem>
+                <SelectItem className="backdrop-blur-sm h-12"value="gbp">GBP</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+  
+          <div className="grid grid-cols-1 gap-4 h-auto w-full">
+            {balances.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full ">
+                {balances.map((token, index) => (
+                  <Card key={index} className="border-white/50 backdrop-blur-sm">
+                    <CardContent className="p-4">
+                      <div className="flex py-1 justify-between">
+                        <div className="flex flex-row">
+                          <img
+                            width={60}
+                            src={btcImage ? 'https://w7.pngwing.com/pngs/634/449/png-transparent-btc-cryptocurrencies-icon.png' : token.logo_url}
+                            className="rounded-full"
+                          />
+                          <div className="max-w-fit" >
+                            <div className="text-2xl max-w-fit px-2 font-medium text-white">{token.contract_name}</div>
+                            <div className="flex">
+                              <p className="px-2 ">{token.contract_ticker_symbol}</p>
+                              <p>{(parseFloat(token.balance) / Math.pow(10, token.contract_decimals)).toFixed(6)}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="md:text-2xl sm:text-2xl">
+                           <NumberTicker value={prices[index]} decimalPlaces={2} />
+                           {fiatId.toUpperCase()}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'red' }} className="text-lg font-bold">Insert a valid address to see the balance</p>
+            )}
           </div>
         </div>
       </div>
-      </div>
-
-      );
+      <Author />
+    </div>
+  );
+  
+  
       {/*<div className="h-1/4 my-24 px-8 rounded-2xl py-8 flex justify-center items-center backdrop-blur-sm bg-white/5 ">
        <div className="text-center">
       <p className="text-3xl py-8" >Enter you Wallet Address</p>
