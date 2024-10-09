@@ -13,8 +13,6 @@ import axios from "axios";
             }
         })
         const profileData = response.data;
-        console.log('teste')
-        console.log(profileData)
         return profileData
         }catch(error){
             console.error('error ao buscar perfil', error)

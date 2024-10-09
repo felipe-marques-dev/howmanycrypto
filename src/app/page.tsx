@@ -10,7 +10,6 @@ import { useTheme } from "next-themes";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import Particles from "@/components/ui/particles";
-import NumberTicker from "@/components/ui/number-ticker";
 import Author from "@/components/Author";
 
 const Home = () => {
@@ -25,6 +24,7 @@ const Home = () => {
   useEffect(() => {
     setColor("#ffffff");
   }, [theme]);
+ 
   
 
   useEffect(() => {
@@ -49,7 +49,11 @@ const Home = () => {
       if(fiatId){
         const pricePromises = balances.map(async (token) => {
           const response = await fetchCovertedPrices('usd', fiatId, token.quote)
-            return response.toFixed(2)
+          const parsedPrice= parseFloat(response)
+          if(isNaN(parsedPrice)){
+            return 0;
+          }
+          return Number(parsedPrice.toFixed(2))
           }
         )
         const prices = await Promise.all(pricePromises)
@@ -147,8 +151,8 @@ const Home = () => {
                           </div>
                         </div>
                         <p className="md:text-2xl sm:text-2xl">
-                           <NumberTicker value={prices[index]} decimalPlaces={2} />
-                           {fiatId.toUpperCase()}</p>
+                           {prices[index]} {fiatId.toUpperCase()}
+                           </p>
                       </div>
                     </CardContent>
                   </Card>
