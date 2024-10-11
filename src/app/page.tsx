@@ -11,49 +11,44 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import Particles from "@/components/ui/particles";
 import Author from "@/components/Author";
+import CryptoGrid from "@/components/CryptoGrid";
 
 const Home = () => {
   const [balances, setBalances] = useState<any[]>([]);
-  const [walletAddress, setWalletAddress] = useState<string>("");
+  const [walletAddress, setWalletAddress] = useState<string>("0");
   const [chainName, setChainName] = useState<string>('');
-  const [btcImage, setBtcImage] = useState<boolean>(true)
   const { theme } = useTheme();
   const [color, setColor] = useState("#ffffff");
   const [fiatId, setFiatId] = useState<string>('usd')
   const [prices, setPrices]= useState<number[]>([])
+  const apiKey = process.env.NEXT_PUBLIC_GOLDRUSH_API_KEY
+  const url = `https://api.covalenthq.com/v1/${chainName}/address/${walletAddress}/balances_v2/?key=${apiKey}`;
+
+
   useEffect(() => {
     setColor("#ffffff");
   }, [theme]);
  
-  
-
   useEffect(() => {
     const getBalances = async () => {
-      if (walletAddress && chainName && walletAddress.length > 25) {
-        const response = await fetchBalances(walletAddress, chainName);
-        setBalances(response)
-        if(chainName == "btc-mainnet"){
-            setBtcImage(true)
-        }else{
-            setBtcImage(false)
-        }
+      if (chainName && walletAddress){
+        const fetchedBalances = await fetchBalances(url);
+        setBalances(fetchedBalances)
       }
-
     }
-    getBalances();
-  }, [walletAddress, chainName]);
+    getBalances()
+  }, [chainName, walletAddress]) 
 
   useEffect(() => {
-    const getCryptoPrice = async () => {
-      
-      if(fiatId){
+    const convertPrices = async () => {
+      if(balances.length > 0 && fiatId){
         const pricePromises = balances.map(async (token) => {
           const response = await fetchCovertedPrices('usd', fiatId, token.quote)
           const parsedPrice= parseFloat(response)
           if(isNaN(parsedPrice)){
             return 0;
           }
-          return Number(parsedPrice.toFixed(2))
+          return isNaN(parsedPrice)? 0 : Number(parsedPrice.toFixed(2))
           }
         )
         const prices = await Promise.all(pricePromises)
@@ -61,7 +56,7 @@ const Home = () => {
       }
       
     }
-    getCryptoPrice()
+    convertPrices()
   },[fiatId, balances])
 
 
@@ -90,6 +85,7 @@ const Home = () => {
         ease={90}
         color={color}
         refresh
+        size={2}
       />
       <div className="my-16 min-h-screen backdrop-blur-sm rounded-xl shadow-lg p-6 space-y-6">
         <h1 className="text-3xl font-bold text-white text-center">Wallet Viewer</h1>
@@ -128,40 +124,8 @@ const Home = () => {
               </SelectContent>
             </Select>
           </div>
-  
-          <div className="grid grid-cols-1 gap-4 h-auto w-full">
-            {balances.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full ">
-                {balances.map((token, index) => (
-                  <Card key={index} className="border-white/50 backdrop-blur-sm">
-                    <CardContent className="p-4">
-                      <div className="flex py-1 justify-between">
-                        <div className="flex flex-row">
-                          <img
-                            width={60}
-                            src={btcImage ? 'https://w7.pngwing.com/pngs/634/449/png-transparent-btc-cryptocurrencies-icon.png' : token.logo_url}
-                            className="rounded-full"
-                          />
-                          <div className="max-w-fit" >
-                            <div className="text-2xl max-w-fit px-2 font-medium text-white">{token.contract_name}</div>
-                            <div className="flex">
-                              <p className="px-2 ">{token.contract_ticker_symbol}</p>
-                              <p>{(parseFloat(token.balance) / Math.pow(10, token.contract_decimals)).toFixed(6)}</p>
-                            </div>
-                          </div>
-                        </div>
-                        <p className="md:text-2xl sm:text-2xl">
-                           {prices[index]} {fiatId.toUpperCase()}
-                           </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: 'red' }} className="text-lg font-bold">Insert a valid address to see the balance</p>
-            )}
-          </div>
+          <CryptoGrid address={walletAddress} chainName={chainName} fiatId={fiatId} prices={prices} />
+          
         </div>
       </div>
       <Author />
