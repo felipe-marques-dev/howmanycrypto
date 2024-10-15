@@ -12,6 +12,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import Particles from "@/components/ui/particles";
 import Author from "@/components/Author";
 import CryptoGrid from "@/components/CryptoGrid";
+import { twMerge } from "tailwind-merge";
+
 
 const Home = () => {
   const [balances, setBalances] = useState<any[]>([]);
@@ -21,9 +23,11 @@ const Home = () => {
   const [color, setColor] = useState("#ffffff");
   const [fiatId, setFiatId] = useState<string>('usd')
   const [prices, setPrices]= useState<number[]>([])
+
   const apiKey = process.env.NEXT_PUBLIC_GOLDRUSH_API_KEY
   const url = `https://api.covalenthq.com/v1/${chainName}/address/${walletAddress}/balances_v2/?key=${apiKey}`;
 
+  const chainClasses = twMerge('backdrop-blur-sm', 'h-12')
 
   useEffect(() => {
     setColor("#ffffff");
@@ -101,10 +105,10 @@ const Home = () => {
             <SelectValue placeholder="Select chain" />
           </SelectTrigger>
           <SelectContent >
-            <SelectItem className="backdrop-blur-sm h-12" value="btc-mainnet">Bitcoin</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12"value="eth-mainnet">Ethereum</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12"value="bsc-mainnet">BNB Smart Chain (BSC)</SelectItem>
-            <SelectItem className="backdrop-blur-sm h-12"value="solana-mainnet">Solana</SelectItem>
+            <SelectItem className={chainClasses} value="btc-mainnet">Bitcoin</SelectItem>
+            <SelectItem className={chainClasses} value="eth-mainnet">Ethereum</SelectItem>
+            <SelectItem className={chainClasses} value="bsc-mainnet">BNB Smart Chain (BSC)</SelectItem>
+            <SelectItem className={chainClasses} value="solana-mainnet">Solana</SelectItem>
           </SelectContent>
         </Select>
         

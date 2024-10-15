@@ -3,6 +3,7 @@ import { fetchBalances } from '@/app/utils/getBalance';
 import useSWR from 'swr';
 import { Card, CardContent } from './ui/card';
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode, useMemo } from 'react';
+import CryptoImage from './CryptoImage';
 
 interface CryptoGridProps{
     address: string;
@@ -27,7 +28,6 @@ export default function CryptoGrid({ address, chainName, prices, fiatId}: Crypto
         <p>Error! {error.message}</p>
     )
 
-
     return(
         <div className="grid grid-cols-1 gap-4 h-auto w-full">
             {data ? (
@@ -42,11 +42,8 @@ export default function CryptoGrid({ address, chainName, prices, fiatId}: Crypto
                     <CardContent className="p-4">
                       <div className="flex py-1 justify-between">
                         <div className="flex flex-row">
-                          <img
-                            width={60}
-                            src={token.logo_url}
-                            className="rounded-full"
-                          />
+                          <CryptoImage data={token.logo_url}/>
+
                           <div className="max-w-fit" >
                             <div className="text-2xl max-w-fit px-2 font-medium text-white">{token.contract_name}</div>
                             <div className="flex">
