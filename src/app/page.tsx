@@ -79,7 +79,7 @@ const Home = () => {
 
 
   return (
-    <div className="relative flex flex-col min-h-screen w-full overflow-y-auto items-center justify-start bg-background rounded-lg border md:shadow-xl">
+    <div className=" flex flex-col min-h-screen w-full overflow-y items-center bg-background rounded-lg border md:shadow-xl">
       <span className="my-12 pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-gray-800 to-gray-100 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
         How Many Crypto?
       </span>
@@ -129,59 +129,14 @@ const Home = () => {
             </Select>
           </div>
           <CryptoGrid address={walletAddress} chainName={chainName} fiatId={fiatId} prices={prices} />
-          
+        </div>
+        <div className="my-12" >
+        <Author />
+
         </div>
       </div>
-      <Author />
     </div>
   );
-  
-  
-      {/*<div className="h-1/4 my-24 px-8 rounded-2xl py-8 flex justify-center items-center backdrop-blur-sm bg-white/5 ">
-       <div className="text-center">
-      <p className="text-3xl py-8" >Enter you Wallet Address</p>
-      <Input
-        className="brightness-200 rounded-xl backdrop-blur-sm bg-white/5 "
-        type="text"
-        value={walletAddress}
-        onChange={handleInputChange}
-        placeholder="Digite o endereço da carteira"
-      />
-      <div className="my-4">
-        {balances.length > 0 ? (
-          <ul>
-            {balances.map((token, index) => (
-              <li key={index}>
-                {token.contract_name}: {parseFloat(token.balance) / Math.pow(10, token.contract_decimals)}
-                <img width={20} src={token.logo_url} ></img> 
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p style={{color: 'red'}}>Insira um endereço válido para ver os saldos</p>
-        )}
-      </div>
-      </div>
-    </div>
-    </div> */}
-  {/*return (
-    <div>
-      <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background">
-      <Meteors number={30} />
-      <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-        Meteors
-      </span>
-      </div>
-      <h1>Verificador de Saldo de Ethereum</h1>
-      <input
-        type="text"
-        value={walletAddress}
-        onChange={handleInputChange}
-        placeholder="Digite o endereço da carteira"
-      />
-      <p>Saldo: {balance !== null ? `${balance} ETH` : "Insira um endereço válido"}</p>
-    </div>
-  ); */}
 };
 
 export default Home;
